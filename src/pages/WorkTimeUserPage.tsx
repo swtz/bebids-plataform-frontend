@@ -7,7 +7,7 @@ import { workTimeFields } from '@/components/resource/workTimeFieldPresets';
 import { PageHeader } from '@/components/resource/PageHeader';
 import { DynamicForm } from '@/components/resource/DynamicForm';
 import { Card } from '@/components/ui/Card';
-import { Select } from '@/components/ui/Select';
+import { EntitySelectButton } from '@/components/ui/EntitySelectButton';
 import { Button } from '@/components/ui/Button';
 import { ErrorMessage } from '@/components/ui/ErrorMessage';
 
@@ -48,14 +48,7 @@ function UserSelect({
   return (
     <div className="form-field">
       <label htmlFor={id}>{label}</label>
-      <Select id={id} value={value} onChange={e => onChange(e.target.value)}>
-        <option value="">Selecione…</option>
-        {options.map(opt => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </Select>
+      <EntitySelectButton id={id} value={value} onChange={onChange} options={options} title={label} />
     </div>
   );
 }
@@ -145,14 +138,13 @@ function SetSharedWorkTimeToUserCard() {
         <UserSelect id="sharedUserId" label="Usuário" value={userId} onChange={setUserId} />
         <div className="form-field">
           <label htmlFor="sharedWorkTimeId">Horário</label>
-          <Select id="sharedWorkTimeId" value={workTimeId} onChange={e => setWorkTimeId(e.target.value)}>
-            <option value="">Selecione…</option>
-            {workTimeOptions.map(opt => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </Select>
+          <EntitySelectButton
+            id="sharedWorkTimeId"
+            value={workTimeId}
+            onChange={setWorkTimeId}
+            options={workTimeOptions}
+            title="Horário"
+          />
         </div>
       </div>
 

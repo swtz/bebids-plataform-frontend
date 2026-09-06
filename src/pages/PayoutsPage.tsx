@@ -17,7 +17,7 @@ import { PageHeader } from '@/components/resource/PageHeader';
 import { DataTable } from '@/components/resource/DataTable';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { Select } from '@/components/ui/Select';
+import { EntitySelectButton } from '@/components/ui/EntitySelectButton';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
 import { Spinner } from '@/components/ui/Spinner';
@@ -227,14 +227,13 @@ function PayoutPreviewAndCreate() {
       <div className="form-grid" style={{ marginBottom: 16 }}>
         <div className="form-field">
           <label htmlFor="payoutNickname">Motoboy</label>
-          <Select id="payoutNickname" value={nickname} onChange={e => setNickname(e.target.value)}>
-            <option value="">Selecione…</option>
-            {motoboyOptions.map(opt => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </Select>
+          <EntitySelectButton
+            id="payoutNickname"
+            value={nickname}
+            onChange={setNickname}
+            options={motoboyOptions}
+            title="Motoboy"
+          />
         </div>
         <div className="form-field">
           <label htmlFor="payoutFrom">De</label>
@@ -279,18 +278,13 @@ function PayoutPreviewAndCreate() {
           >
             <div className="form-field" style={{ maxWidth: 320 }}>
               <label htmlFor="payoutPlaceCode">Estabelecimento</label>
-              <Select
+              <EntitySelectButton
                 id="payoutPlaceCode"
                 value={placeCode}
-                onChange={e => setPlaceCode(e.target.value)}
-              >
-                <option value="">Selecione…</option>
-                {placeCodeOptions.map(opt => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </Select>
+                onChange={setPlaceCode}
+                options={placeCodeOptions}
+                title="Estabelecimento"
+              />
             </div>
             <Button
               type="button"

@@ -20,10 +20,13 @@ interface EntityPickerSheetProps {
 }
 
 /**
- * Substitui um `<select>` nativo para escolher Cliente/Motoboy/Operador/
- * Estabelecimento — um bottom-sheet com lista rolável, ícone + nome + uma
- * linha de meta-info, marca de seleção. Um componente genérico só,
- * parametrizado por `options`, em vez de N variações copiadas por tela.
+ * Substitui um `<select>` nativo para escolher uma entidade (Cliente,
+ * Motoboy, Operador, Estabelecimento...) OU um enum (forma de pagamento,
+ * papel, turno...) — em qualquer tamanho de tela. Abaixo de 769px aparece
+ * como bottom-sheet; a partir de 769px (desktop) vira um drawer que desliza
+ * da direita, cobrindo a lateral direita da tela com o fundo escurecido —
+ * a troca entre os dois é só CSS (`.picker-backdrop`/`.picker-panel`, ver
+ * index.css), o componente é o mesmo dos dois lados do breakpoint.
  *
  * Nota de implementação: o ícone de check fica sempre montado (opacidade
  * 0/1 conforme `selected`) em vez de ser condicionalmente renderizado —
@@ -43,29 +46,14 @@ export function EntityPickerSheet({
   if (!open) return null;
 
   return (
-    <div
-      className="dialog-backdrop"
-      style={{ alignItems: 'flex-end', padding: 0 }}
-      onClick={onClose}
-    >
-      <div
-        className="dialog"
-        style={{
-          width: '100%',
-          maxWidth: 480,
-          margin: '0 auto',
-          borderRadius: 'var(--radius-lg) var(--radius-lg) 0 0',
-          maxHeight: '70vh',
-          overflowY: 'auto',
-        }}
-        onClick={e => e.stopPropagation()}
-      >
+    <div className="picker-backdrop" onClick={onClose}>
+      <div className="picker-panel" onClick={e => e.stopPropagation()}>
         <div className="dialog-title" style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 17 }}>
           {Icon && <Icon size={18} strokeWidth={2.5} />}
           {title}
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, overflowY: 'auto' }}>
           {options.length === 0 && (
             <p className="text-muted" style={{ fontSize: 13 }}>
               {emptyMessage}

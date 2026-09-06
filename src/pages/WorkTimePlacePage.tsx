@@ -21,7 +21,7 @@ import { DynamicForm } from '@/components/resource/DynamicForm';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import { Select } from '@/components/ui/Select';
+import { EntitySelectButton } from '@/components/ui/EntitySelectButton';
 import { Badge } from '@/components/ui/Badge';
 import { ErrorMessage } from '@/components/ui/ErrorMessage';
 import { useActionError } from '@/hooks/useActionError';
@@ -193,14 +193,14 @@ function PlaceSelect({ value, onChange }: { value: string; onChange: (v: string)
   );
 
   return (
-    <Select id="placeId" value={value} onChange={e => onChange(e.target.value)}>
-      <option value="">Usar estabelecimento padrão</option>
-      {options.map(opt => (
-        <option key={opt.value} value={opt.value}>
-          {opt.label}
-        </option>
-      ))}
-    </Select>
+    <EntitySelectButton
+      id="placeId"
+      value={value}
+      onChange={onChange}
+      options={options}
+      title="Estabelecimento"
+      placeholder="Usar estabelecimento padrão"
+    />
   );
 }
 

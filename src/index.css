@@ -327,6 +327,54 @@ textarea.input {
   background: color-mix(in srgb, var(--color-text) 4%, transparent);
 }
 
+/* — seletor de entidade/enum: bottom-sheet no mobile, drawer da direita no
+   desktop (>= 769px) — um componente só (EntityPickerSheet), o breakpoint
+   decide a apresentação puramente via CSS, sem JS. Classes dedicadas
+   (não reaproveita .dialog/.dialog-backdrop) pra não afetar o
+   ConfirmDialog, que deve continuar sempre centralizado. */
+.picker-backdrop {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-neutral-900) 50%, transparent);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.picker-panel {
+  width: 100%;
+  max-width: 480px;
+  max-height: 70vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: var(--space-4);
+  box-shadow: var(--shadow-lg);
+  animation: fadeUp 0.22s ease both;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@media (min-width: 769px) {
+  .picker-backdrop {
+    align-items: stretch;
+    justify-content: flex-end;
+  }
+  .picker-panel {
+    max-width: 420px;
+    max-height: none;
+    height: 100%;
+    border-radius: 0;
+    animation: slideInRight 0.25s ease both;
+  }
+}
+
 /* — diálogos (modal centralizado ou bottom-sheet, via override inline) — */
 .dialog-backdrop {
   position: fixed;

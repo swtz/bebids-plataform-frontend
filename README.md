@@ -155,6 +155,38 @@ Esses dois módulos têm um fluxo diferente dos demais, espelhando o método
 
 ## Notas de arquitetura
 
+### Todo `<select>` do sistema virou `EntitySelectButton` — sheet no mobile, drawer da direita no desktop
+
+O que antes era só um comportamento mobile do `DynamicForm` virou o padrão
+**único e universal** de seleção do sistema inteiro, em qualquer tamanho de
+tela:
+
+- **`EntityPickerSheet`** (`src/components/ui/EntityPickerSheet.tsx`) ganhou
+  classes CSS dedicadas (`.picker-backdrop`/`.picker-panel`, em
+  `index.css`) — abaixo de 769px aparece como bottom-sheet; a partir de
+  769px vira um **drawer que desliza da direita**, cobrindo a lateral
+  direita da tela com o fundo escurecido. A troca entre os dois é só CSS
+  (`@media (min-width: 769px)`), o componente React é o mesmo dos dois
+  lados do breakpoint — nenhuma lógica de JS decide isso. Essas classes são
+  propositalmente separadas de `.dialog`/`.dialog-backdrop` (usadas pelo
+  `ConfirmDialog`), que devem continuar sempre centralizados — não viram
+  drawer em tela grande.
+- **`EntitySelectButton`** (`src/components/ui/EntitySelectButton.tsx`) — um
+  botão no estilo `.input` que controla seu próprio estado de
+  aberto/fechado e abre o `EntityPickerSheet`. Não depende de
+  react-hook-form nem de nenhum formulário — funciona tanto solto numa
+  página (`useState` local) quanto dentro do `DynamicForm` (via
+  `Controller`).
+- **`DynamicForm`** foi simplificado: antes só usava esse padrão no mobile
+  (`useIsMobile()` decidia entre `<select>` nativo e o sheet); agora **todo**
+  `FieldConfig` do tipo `select` — entidade ou enum, em qualquer tela — usa
+  `EntitySelectButton` sempre. Menos ramificação, mais consistente.
+- O componente `Select.tsx` (o `<select>` nativo estilizado) foi **removido**
+  — depois de converter os 14 usos que ainda existiam fora do
+  `DynamicForm` (painel de filtros de Entregas, seletores de usuário/moto/
+  estabelecimento em WorkTimeUser, WorkTimePlace, IntervalTime, Motoboys,
+  Payouts e Settlements), nenhum arquivo do projeto o importava mais.
+
 ### iPhones com notch/Dynamic Island cortando conteúdo — `viewport-fit=cover` + `dvh`
 
 Em iPhones recentes, o topbar/drawer/login do modo mobile apareciam com o

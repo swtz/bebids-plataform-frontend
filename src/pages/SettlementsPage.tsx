@@ -15,7 +15,7 @@ import { PageHeader } from '@/components/resource/PageHeader';
 import { DataTable } from '@/components/resource/DataTable';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { Select } from '@/components/ui/Select';
+import { EntitySelectButton } from '@/components/ui/EntitySelectButton';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
 import { Spinner } from '@/components/ui/Spinner';
@@ -238,18 +238,13 @@ function SettlementPreviewAndCreate() {
       <div className="form-grid" style={{ marginBottom: 16 }}>
         <div className="form-field">
           <label htmlFor="settlementNickname">Operador</label>
-          <Select
+          <EntitySelectButton
             id="settlementNickname"
             value={nickname}
-            onChange={e => setNickname(e.target.value)}
-          >
-            <option value="">Selecione…</option>
-            {operatorOptions.map(opt => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </Select>
+            onChange={setNickname}
+            options={operatorOptions}
+            title="Operador"
+          />
         </div>
         <div className="form-field">
           <label htmlFor="settlementFrom">De</label>
@@ -291,18 +286,13 @@ function SettlementPreviewAndCreate() {
             <div className="form-grid" style={{ marginBottom: 16 }}>
               <div className="form-field">
                 <label htmlFor="settlementPlaceCode">Estabelecimento</label>
-                <Select
+                <EntitySelectButton
                   id="settlementPlaceCode"
                   value={placeCode}
-                  onChange={e => setPlaceCode(e.target.value)}
-                >
-                  <option value="">Selecione…</option>
-                  {placeCodeOptions.map(opt => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </Select>
+                  onChange={setPlaceCode}
+                  options={placeCodeOptions}
+                  title="Estabelecimento"
+                />
               </div>
               <div className="form-field">
                 <label htmlFor="settlementInitValue">Valor inicial do caixa (R$)</label>

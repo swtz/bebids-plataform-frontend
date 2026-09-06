@@ -29,7 +29,7 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Spinner } from '@/components/ui/Spinner';
 import { ErrorMessage } from '@/components/ui/ErrorMessage';
-import { Select } from '@/components/ui/Select';
+import { EntitySelectButton } from '@/components/ui/EntitySelectButton';
 import { Input } from '@/components/ui/Input';
 import { DeleteIconButton, EditIconButton } from '@/components/ui/IconButton';
 import type { QueryParams } from '@/lib/apiClient';
@@ -203,15 +203,18 @@ function DeliveryFilterPanel({
       <div className="form-grid" style={{ marginBottom: 16 }}>
         <div className="form-field">
           <label htmlFor="filterType">Filtrar por usuário</label>
-          <Select
+          <EntitySelectButton
             id="filterType"
             value={filters.type}
-            onChange={e => onChange({ type: e.target.value as DeliveryFiltersState['type'] })}
-          >
-            <option value="">Nenhum</option>
-            <option value={Role.Operator}>Operador</option>
-            <option value={Role.Motoboy}>Motoboy</option>
-          </Select>
+            onChange={v => onChange({ type: v as DeliveryFiltersState['type'] })}
+            options={[
+              { value: '', label: 'Nenhum' },
+              { value: Role.Operator, label: 'Operador' },
+              { value: Role.Motoboy, label: 'Motoboy' },
+            ]}
+            title="Filtrar por usuário"
+            placeholder="Nenhum"
+          />
         </div>
         <div className="form-field">
           <label htmlFor="filterFrom">Criada de</label>
@@ -257,14 +260,14 @@ function DeliveryFilterPanel({
             </div>
             <div className="form-field">
               <label htmlFor="filterPlaceCode">Estabelecimento</label>
-              <Select id="filterPlaceCode" value={filters.placeCode} onChange={e => onChange({ placeCode: e.target.value })}>
-                <option value="">Todos</option>
-                {placeCodeOptions.map(opt => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </Select>
+              <EntitySelectButton
+                id="filterPlaceCode"
+                value={filters.placeCode}
+                onChange={v => onChange({ placeCode: v })}
+                options={[{ value: '', label: 'Todos' }, ...placeCodeOptions]}
+                title="Estabelecimento"
+                placeholder="Todos"
+              />
             </div>
           </div>
         </fieldset>
@@ -284,30 +287,32 @@ function DeliveryFilterPanel({
           </div>
           <div className="form-field">
             <label htmlFor="filterPaymentMethod">Forma de pagamento</label>
-            <Select
+            <EntitySelectButton
               id="filterPaymentMethod"
               value={filters.paymentMethod}
-              onChange={e => onChange({ paymentMethod: e.target.value })}
-            >
-              <option value="">Todas</option>
-              {paymentMethodOptions.map(m => (
-                <option key={m} value={m}>
-                  {paymentMethodLabels[m]}
-                </option>
-              ))}
-            </Select>
+              onChange={v => onChange({ paymentMethod: v })}
+              options={[
+                { value: '', label: 'Todas' },
+                ...paymentMethodOptions.map(m => ({ value: m, label: paymentMethodLabels[m] })),
+              ]}
+              title="Forma de pagamento"
+              placeholder="Todas"
+            />
           </div>
           <div className="form-field">
             <label htmlFor="filterIsPaid">Pagamento</label>
-            <Select
+            <EntitySelectButton
               id="filterIsPaid"
               value={filters.isPaid}
-              onChange={e => onChange({ isPaid: e.target.value as DeliveryFiltersState['isPaid'] })}
-            >
-              <option value="">Todos</option>
-              <option value="true">Pago</option>
-              <option value="false">Não pago</option>
-            </Select>
+              onChange={v => onChange({ isPaid: v as DeliveryFiltersState['isPaid'] })}
+              options={[
+                { value: '', label: 'Todos' },
+                { value: 'true', label: 'Pago' },
+                { value: 'false', label: 'Não pago' },
+              ]}
+              title="Pagamento"
+              placeholder="Todos"
+            />
           </div>
         </div>
       </fieldset>
@@ -317,26 +322,28 @@ function DeliveryFilterPanel({
         <div className="form-grid">
           <div className="form-field">
             <label htmlFor="filterField">Campo</label>
-            <Select id="filterField" value={filters.field} onChange={e => onChange({ field: e.target.value })}>
-              <option value="">Padrão (criado em, mais recentes)</option>
-              {orderFieldOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </Select>
+            <EntitySelectButton
+              id="filterField"
+              value={filters.field}
+              onChange={v => onChange({ field: v })}
+              options={[{ value: '', label: 'Padrão (criado em, mais recentes)' }, ...orderFieldOptions]}
+              title="Ordenar por"
+              placeholder="Padrão (criado em, mais recentes)"
+            />
           </div>
           <div className="form-field">
             <label htmlFor="filterOrder">Direção</label>
-            <Select
+            <EntitySelectButton
               id="filterOrder"
               value={filters.order}
+              onChange={v => onChange({ order: v as 'asc' | 'desc' })}
               disabled={!filters.field}
-              onChange={e => onChange({ order: e.target.value as 'asc' | 'desc' })}
-            >
-              <option value="asc">Crescente</option>
-              <option value="desc">Decrescente</option>
-            </Select>
+              options={[
+                { value: 'asc', label: 'Crescente' },
+                { value: 'desc', label: 'Decrescente' },
+              ]}
+              title="Direção"
+            />
           </div>
         </div>
       </fieldset>

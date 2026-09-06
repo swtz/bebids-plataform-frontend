@@ -1,15 +1,11 @@
-import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm, type FieldValues } from 'react-hook-form';
 import type { ZodType, ZodTypeDef } from 'zod';
-import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Select } from '@/components/ui/Select';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { ErrorMessage } from '@/components/ui/ErrorMessage';
-import { EntityPickerSheet } from '@/components/ui/EntityPickerSheet';
-import { useIsMobile } from '@/hooks/useIsMobile';
+import { EntitySelectButton } from '@/components/ui/EntitySelectButton';
 import { timeToIso } from '@/lib/timeUtils';
 import type { FieldConfig } from './FieldConfig';
 
@@ -46,9 +42,6 @@ export function DynamicForm<T extends FieldValues>({
   isSubmitting,
   serverError,
 }: DynamicFormProps<T>) {
-  const isMobile = useIsMobile();
-  const [activePickerField, setActivePickerField] = useState<FieldConfig | null>(null);
-
   const {
     register,
     handleSubmit,
@@ -80,73 +73,25 @@ export function DynamicForm<T extends FieldValues>({
     return (
       <div className="form-field" key={field.name}>
         <label htmlFor={field.name}>{field.label}</label>
-        {field.type === 'select' && isMobile ? (
-          // No mobile, todo campo "select" vira um botão que abre um
-          // bottom-sheet (EntityPickerSheet) em vez do <select> nativo —
-          // um mecanismo só, dentro do DynamicForm, em vez de reimplementar
-          // isso em cada tela que usa um campo de seleção.
+        {field.type === 'select' ? (
+          // Todo campo "select" — entidade ou enum, em qualquer tamanho de
+          // tela — vira um EntitySelectButton (bottom-sheet no mobile,
+          // drawer da direita no desktop) em vez do <select> nativo. Um
+          // mecanismo só, dentro do DynamicForm, em vez de reimplementar
+          // isso em cada tela.
           <Controller
             name={field.name as never}
             control={control}
-            render={({ field: rhfField }) => {
-              const selectedOption = field.options?.find(o => o.value === rhfField.value);
-              const isPickerOpen = activePickerField?.name === field.name;
-              return (
-                <>
-                  <button
-                    type="button"
-                    id={field.name}
-                    className="input"
-                    onClick={() => setActivePickerField(field)}
-                    style={{
-                      textAlign: 'left',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      gap: 8,
-                    }}
-                  >
-                    <span
-                      style={{
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        color: selectedOption ? 'var(--color-text)' : 'var(--color-text-muted)',
-                      }}
-                    >
-                      {selectedOption?.label ?? 'Selecione…'}
-                    </span>
-                    <ChevronDown size={16} style={{ flexShrink: 0, opacity: 0.6 }} />
-                  </button>
-                  {isPickerOpen && (
-                    <EntityPickerSheet
-                      open
-                      title={field.label}
-                      options={(field.options ?? []).map(opt => ({
-                        ...opt,
-                        selected: opt.value === rhfField.value,
-                      }))}
-                      onSelect={value => {
-                        rhfField.onChange(value);
-                        setActivePickerField(null);
-                      }}
-                      onClose={() => setActivePickerField(null)}
-                    />
-                  )}
-                </>
-              );
-            }}
+            render={({ field: rhfField }) => (
+              <EntitySelectButton
+                id={field.name}
+                value={rhfField.value ?? ''}
+                onChange={rhfField.onChange}
+                options={field.options ?? []}
+                title={field.label}
+              />
+            )}
           />
-        ) : field.type === 'select' ? (
-          <Select id={field.name} {...registration}>
-            <option value="">Selecione…</option>
-            {field.options?.map(opt => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </Select>
         ) : field.type === 'checkbox' ? (
           <Checkbox id={field.name} {...registration} />
         ) : field.type === 'textarea' ? (

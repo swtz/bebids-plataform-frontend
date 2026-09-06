@@ -24,7 +24,7 @@ import { DynamicForm } from '@/components/resource/DynamicForm';
 import type { FieldConfig } from '@/components/resource/FieldConfig';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { Select } from '@/components/ui/Select';
+import { EntitySelectButton } from '@/components/ui/EntitySelectButton';
 import { EditIconButton } from '@/components/ui/IconButton';
 import type { User } from '@/schemas/user.schema';
 import type { Motorcycle } from '@/schemas/motorcycle.schema';
@@ -257,18 +257,13 @@ function MotoboyCreateWithExistingMotorcycleForm({ onCreated }: { onCreated: () 
     <div>
       <div className="form-field" style={{ marginBottom: 20, maxWidth: 360 }}>
         <label htmlFor="existingMotorcycle">Motocicleta</label>
-        <Select
+        <EntitySelectButton
           id="existingMotorcycle"
           value={motorcycleId}
-          onChange={e => setMotorcycleId(e.target.value)}
-        >
-          <option value="">Selecione…</option>
-          {options.map(opt => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </Select>
+          onChange={setMotorcycleId}
+          options={options}
+          title="Motocicleta"
+        />
         {selected?.placeCode && (
           <p style={{ fontSize: 12, color: 'var(--color-accent-700)', marginTop: 4 }}>
             Esta moto ({selected.licensePlate}) pertence ao estabelecimento{' '}

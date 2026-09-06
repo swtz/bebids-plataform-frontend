@@ -22,7 +22,7 @@ import { DynamicForm } from '@/components/resource/DynamicForm';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { InfoCard } from '@/components/ui/InfoCard';
-import { Select } from '@/components/ui/Select';
+import { EntitySelectButton } from '@/components/ui/EntitySelectButton';
 import { ErrorMessage } from '@/components/ui/ErrorMessage';
 import { useActionError } from '@/hooks/useActionError';
 import { useConfirmDialog } from '@/hooks/useConfirmDialog';
@@ -193,14 +193,13 @@ function CreateIntervalTimeForUserForm({ onCreated }: { onCreated: () => void })
     <div>
       <div className="form-field" style={{ marginBottom: 16, maxWidth: 360 }}>
         <label htmlFor="intervalUserId">Usuário</label>
-        <Select id="intervalUserId" value={userId} onChange={e => setUserId(e.target.value)}>
-          <option value="">Selecione…</option>
-          {userOptions.map(opt => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </Select>
+        <EntitySelectButton
+          id="intervalUserId"
+          value={userId}
+          onChange={setUserId}
+          options={userOptions}
+          title="Usuário"
+        />
       </div>
 
       {userId ? (
