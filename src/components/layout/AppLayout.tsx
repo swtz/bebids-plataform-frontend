@@ -14,7 +14,7 @@ export function AppLayout() {
 
   if (isMobile) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <div className="mobile-shell">
         <MobileTopBar onMenuClick={() => setIsDrawerOpen(true)} />
         <MobileDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
         <main key={location.pathname} className="app-content mobile-screen" style={{ flex: 1, padding: '16px' }}>

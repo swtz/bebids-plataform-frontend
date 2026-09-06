@@ -155,6 +155,33 @@ Esses dois módulos têm um fluxo diferente dos demais, espelhando o método
 
 ## Notas de arquitetura
 
+### iPhones com notch/Dynamic Island cortando conteúdo — `viewport-fit=cover` + `dvh`
+
+Em iPhones recentes, o topbar/drawer/login do modo mobile apareciam com o
+título cortado, sobrepondo a barra de status. Causa raiz, em duas partes:
+
+1. **`env(safe-area-inset-*)` sempre valia zero.** Esse valor só é
+   calculado pelo navegador quando a meta viewport tem `viewport-fit=cover`
+   — sem ela (era o caso), *toda* referência a `env(safe-area-inset-top)`/
+   `env(safe-area-inset-bottom)` no CSS silenciosamente virava `0px`, então
+   até a proteção que a barra inferior de abas já tinha nunca funcionou de
+   verdade. Adicionado em `index.html`.
+2. **`100vh` é instável no Safari mobile.** A barra de endereço do Safari
+   aparece/recolhe conforme o scroll, mudando a altura *real* da viewport a
+   cada momento — `100vh` não acompanha isso (fica calculado num instante
+   específico), causando o shell mobile ficar com altura errada em certas
+   situações. Trocado por `100dvh` (dynamic viewport height, acompanha a
+   altura visível de verdade a cada instante), com `100vh` como fallback
+   pra navegador sem suporte — ver classe `.mobile-shell` em `index.css`,
+   usada por `AppLayout.tsx` no lugar do `minHeight: '100vh'` inline (que
+   não tinha como declarar esse fallback em cascata).
+
+Com isso: `.mobile-topbar`, `.mobile-drawer` e `.mobile-login` ganharam
+`padding-top`/`padding-bottom` somando `env(safe-area-inset-top/bottom)` ao
+espaçamento que já tinham, então o conteúdo deles nunca fica embaixo do
+notch, da Dynamic Island ou da barra de gestos inferior — em qualquer
+iPhone, não só num modelo específico.
+
 ### Erros de ação sempre visíveis, diálogos de verdade em vez de `window.confirm`
 
 Duas correções sistêmicas aplicadas em **todas as 12 páginas** que têm ações

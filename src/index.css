@@ -704,11 +704,23 @@ textarea.input {
 
 /* ═══════════════════ App shell mobile (< 768px) ═══════════════════ */
 
+.mobile-shell {
+  display: flex;
+  flex-direction: column;
+  /* 100vh no Safari mobile conta a altura com a barra de endereço visível
+     (ou some, dependendo do momento) — 100dvh acompanha a altura real e
+     visível da viewport a cada instante. Mantém 100vh como fallback para
+     navegadores sem suporte a dvh. */
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
 .mobile-topbar {
   flex-shrink: 0;
   background: var(--color-neutral-900);
   color: var(--color-neutral-100);
   padding: 14px 16px;
+  padding-top: calc(14px + env(safe-area-inset-top, 0px));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -770,6 +782,8 @@ textarea.input {
   color: var(--color-neutral-100);
   z-index: 91;
   padding: 22px 16px;
+  padding-top: calc(22px + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
   animation: slideInLeft 0.22s ease;
   display: flex;
@@ -807,6 +821,7 @@ textarea.input {
 @media (max-width: 768px) {
   .mobile-login {
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -815,6 +830,8 @@ textarea.input {
     background: var(--color-neutral-900);
     color: var(--color-neutral-100);
     padding: 32px;
+    padding-top: calc(32px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
     position: relative;
     overflow: hidden;
   }
